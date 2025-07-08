@@ -30,3 +30,9 @@ Thumbs.db
 
 # env files
 .env
+
+# Database files
+storage
+
+# Conguration files
+/config
