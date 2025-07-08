@@ -39,3 +39,11 @@ In summary, using a `config` folder with environment-specific YAML files promote
 ```bash
 go get -u github.com/ilyakaznacheev/cleanenv
 ```
+
+# To run the server with config flag
+
+```bash
+go run cmd/golang-students-api/main.go -config config/local.yaml
+```
+
+<!-- 7:23:30 -->

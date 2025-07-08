@@ -10,7 +10,7 @@ import (
 
 // HTTPServer holds the configuration for the HTTP server.
 type HTTPServer struct {
-	Addr string
+	Addr string `yaml:"address" env-required:"true"`
 }
 
 // Config holds the application configuration.
