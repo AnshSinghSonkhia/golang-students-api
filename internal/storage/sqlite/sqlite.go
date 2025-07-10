@@ -123,3 +123,45 @@ func (s *Sqlite) GetStudents() ([]types.Student, error) {
 
 	return students, nil // Return the slice of students and no error
 }
+
+func (s *Sqlite) UpdateStudent(id int64, name string, email string, age int) error {
+	stmt, err := s.DB.Prepare("UPDATE students SET name = ?, email = ?, age = ? WHERE id = ?") // Prepare the SQL statement to update a student
+	if err != nil {
+		return err // Return an error if the statement preparation fails
+	}
+
+	defer stmt.Close() // Ensure the statement is closed after use
+
+	// Execute the statement with the provided values
+	_, err = stmt.Exec(name, email, age, id)
+	if err != nil {
+		return fmt.Errorf("update error: %w", err) // Return an error if the execution fails
+	}
+
+	return nil // Return no error if the update is successful
+}
+
+func (s *Sqlite) Close() error {
+	if s.DB != nil {
+		return s.DB.Close() // Close the database connection if it is not nil
+	}
+	return nil // Return nil if the database connection is already nil
+}
+
+// DeleteStudent deletes a student by ID from the storage.
+func (s *Sqlite) DeleteStudent(id int64) error {
+	stmt, err := s.DB.Prepare("DELETE FROM students WHERE id = ?") // Prepare the SQL statement to delete a student by ID
+	if err != nil {
+		return err // Return an error if the statement preparation fails
+	}
+
+	defer stmt.Close() // Ensure the statement is closed after use
+
+	// Execute the statement with the provided ID
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return fmt.Errorf("delete error: %w", err) // Return an error if the execution fails
+	}
+
+	return nil // Return no error if the deletion is successful
+}

@@ -44,6 +44,12 @@ func main() {
 	// register the student handler for GET requests to /api/students
 	router.HandleFunc("GET /api/students", student.GetList(storage))
 
+	// register the student handler for PUT requests to /api/students/{id}
+	router.HandleFunc("PUT /api/students/{id}", student.Update(storage))
+
+	// register the student handler for DELETE requests to /api/students/{id}
+	router.HandleFunc("DELETE /api/students/{id}", student.Delete(storage))
+
 	// setup server
 
 	server := http.Server{

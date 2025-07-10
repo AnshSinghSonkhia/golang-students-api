@@ -116,3 +116,80 @@ func GetList(storage storage.Storage) http.HandlerFunc {
 		response.WriteJSON(w, http.StatusOK, students) // if the list is retrieved successfully, respond with a 200 OK status code and the list of students
 	}
 }
+
+func Update(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		id := r.PathValue("id") // get the ID from the URL path parameters
+
+		slog.Info("Updating student with ID: ", slog.String("id", id)) // log the ID being updated
+
+		intTd, err := strconv.ParseInt(id, 10, 64) // convert the ID from string to int64
+		if err != nil {
+			slog.Error("Error converting ID to int64", slog.String("id", id), slog.Any("error", err)) // log the error if there is an issue converting the ID
+
+			response.WriteJSON(w, http.StatusBadRequest, response.GeneralError(err)) // if there is an error converting the ID, respond with a 400 Bad Request status code
+			return                                                                   // return early to avoid further processing
+		}
+
+		var student types.Student
+
+		err = json.NewDecoder(r.Body).Decode(&student) // decode the request body into a Student struct
+		if err != nil {
+			response.WriteJSON(w, http.StatusBadRequest, response.GeneralError(err)) // if there is an error decoding the request body, respond with a 400 Bad Request status code
+
+			return // return early to avoid further processing
+		}
+
+		if err := validator.New().Struct(student); err != nil { // validate the student struct
+			validateErrs := err.(validator.ValidationErrors) // type assert the error to a ValidationErrors type
+
+			response.WriteJSON(w, http.StatusBadRequest, response.ValidationError(validateErrs)) // if there are validation errors, respond with a 400 Bad Request status code and the validation errors
+
+			return // return early to avoid further processing
+		}
+
+		err = storage.UpdateStudent(intTd, student.Name, student.Email, student.Age) // call the UpdateStudent method on the storage interface to update the student
+
+		if err != nil {
+			slog.Error("Error updating student", slog.String("id", id), slog.Any("error", err)) // log the error if there is an issue updating the student
+
+			response.WriteJSON(w, http.StatusInternalServerError, response.GeneralError(err)) // if there is an error updating the student, respond with a 500 Internal Server Error status code
+
+			return // return early to avoid further processing
+		}
+
+		response.WriteJSON(w, http.StatusOK, map[string]string{"message": "Student updated successfully"})                                                                       // if the student is updated successfully, respond with a 200 OK status code and a success message
+		slog.Info("Student updated successfully", slog.Int64("id", intTd), slog.String("name", student.Name), slog.String("email", student.Email), slog.Int("age", student.Age)) // log the successful update of the student
+	}
+}
+
+func Delete(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		id := r.PathValue("id") // get the ID from the URL path parameters
+
+		slog.Info("Deleting student with ID: ", slog.String("id", id)) // log the ID being deleted
+
+		intTd, err := strconv.ParseInt(id, 10, 64) // convert the ID from string to int64
+		if err != nil {
+			slog.Error("Error converting ID to int64", slog.String("id", id), slog.Any("error", err)) // log the error if there is an issue converting the ID
+
+			response.WriteJSON(w, http.StatusBadRequest, response.GeneralError(err)) // if there is an error converting the ID, respond with a 400 Bad Request status code
+			return                                                                   // return early to avoid further processing
+		}
+
+		err = storage.DeleteStudent(intTd) // call the DeleteStudent method on the storage interface to delete the student by ID
+
+		if err != nil {
+			slog.Error("Error deleting student", slog.String("id", id), slog.Any("error", err)) // log the error if there is an issue deleting the student
+
+			response.WriteJSON(w, http.StatusInternalServerError, response.GeneralError(err)) // if there is an error deleting the student, respond with a 500 Internal Server Error status code
+
+			return // return early to avoid further processing
+		}
+
+		response.WriteJSON(w, http.StatusOK, map[string]string{"message": "Student deleted successfully"}) // if the student is deleted successfully, respond with a 200 OK status code and a success message
+		slog.Info("Student deleted successfully", slog.Int64("id", intTd))                                 // log the successful deletion of the student
+	}
+}

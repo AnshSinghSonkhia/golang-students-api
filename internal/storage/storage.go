@@ -9,5 +9,12 @@ type Storage interface {
 	// GetStudentByID retrieves a student by ID from the storage.
 	GetStudentByID(id int64) (types.Student, error)
 
+	// GetStudents retrieves all students from the storage.
 	GetStudents() ([]types.Student, error)
+
+	// UpdateStudent updates an existing student in the storage.
+	UpdateStudent(id int64, name string, email string, age int) error
+
+	// DeleteStudent deletes a student by ID from the storage.
+	DeleteStudent(id int64) error
 }
