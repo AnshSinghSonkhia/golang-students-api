@@ -46,4 +46,7 @@ go get -u github.com/ilyakaznacheev/cleanenv
 go run cmd/golang-students-api/main.go -config config/local.yaml
 ```
 
-<!-- 7:23:30 -->
+## [ToDo] Create 2 more endpoints 
+ 
+- PUT - Update Student
+- DELETE - Delete a Student
