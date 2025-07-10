@@ -2,8 +2,10 @@ package sqlite
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/AnshSinghSonkhia/golang-students-api/internal/config"
+	"github.com/AnshSinghSonkhia/golang-students-api/internal/types"
 
 	_ "github.com/mattn/go-sqlite3" // Import the SQLite driver
 	// use of _ means we are importing the package solely for its side effects (registering the driver) - i.e., indirect usess
@@ -63,3 +65,29 @@ func (s *Sqlite) CreateStudent(name string, email string, age int) (int64, error
 	// Return the last inserted ID and no error
 	return lastId, nil
 }
+
+func (s *Sqlite) GetStudentByID(id int64) (types.Student, error) {
+	stmt, err := s.DB.Prepare("SELECT id, name, email, age FROM students WHERE id = ? LIMIT 1") // Prepare the SQL statement to select a student by ID
+	if err != nil {
+		return types.Student{}, err // Return an empty Student struct and an error if preparation fails
+	}
+
+	defer stmt.Close() // Ensure the statement is closed after use
+
+	var student types.Student // Create a Student struct to hold the retrieved data
+
+	err = stmt.QueryRow(id).Scan(&student.Id, &student.Name, &student.Email, &student.Age) // Execute the query and scan the result into the Student struct
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return types.Student{}, fmt.Errorf("student with ID %d not found", id) // Return an empty Student struct and a not found error if no rows are returned
+		}
+
+		return types.Student{}, fmt.Errorf("query error: %w", err) // Return an empty Student struct and an error if the query fails
+	}
+
+	// Return the retrieved Student struct and no error
+	return student, nil
+}
+
+// 9:05:00
