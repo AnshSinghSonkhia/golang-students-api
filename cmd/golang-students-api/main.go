@@ -35,7 +35,7 @@ func main() {
 		Handler: router,
 	}
 
-	slog.Info("Server started %s", slog.String("address", cfg.Addr)) // log the server address
+	slog.Info("Server started", slog.String("address", cfg.Addr)) // log the server address
 
 	fmt.Printf("Server is started and runnin %s\n", cfg.HTTPServer.Addr)
 

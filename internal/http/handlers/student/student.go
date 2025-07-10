@@ -9,6 +9,7 @@ import (
 
 	"github.com/AnshSinghSonkhia/golang-students-api/internal/types"
 	"github.com/AnshSinghSonkhia/golang-students-api/internal/utils/response"
+	"github.com/go-playground/validator/v10"
 )
 
 // This file contains the handler for the root endpoint of the Golang Students API.
@@ -36,7 +37,15 @@ func New() http.HandlerFunc {
 		}
 
 		// Request Validataion
-		// 8:04:50
+
+		if err := validator.New().Struct(student); err != nil {
+			validateErrs := err.(validator.ValidationErrors) // type assert the error to a ValidationErrors type
+
+			// if there are validation errors, respond with a 400 Bad Request status code and the validation errors
+			response.WriteJSON(w, http.StatusBadRequest, response.ValidationError(validateErrs))
+
+			return
+		}
 
 		// respond with a success message and a 201 Created status code
 		response.WriteJSON(w, http.StatusCreated, map[string]string{"success": "OK"})
