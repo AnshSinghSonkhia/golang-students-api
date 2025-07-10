@@ -32,7 +32,7 @@ Thumbs.db
 .env
 
 # Database files
-storage
+/storage
 
 # Conguration files
 /config

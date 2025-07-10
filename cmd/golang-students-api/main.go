@@ -13,6 +13,7 @@ import (
 
 	"github.com/AnshSinghSonkhia/golang-students-api/internal/config"
 	"github.com/AnshSinghSonkhia/golang-students-api/internal/http/handlers/student"
+	"github.com/AnshSinghSonkhia/golang-students-api/internal/storage/sqlite"
 )
 
 func main() {
@@ -20,13 +21,21 @@ func main() {
 
 	cfg := config.MustLoad()
 
-	// TODO: database setup
+	// database setup
+
+	storage, err := sqlite.New(cfg) // initialize the SQLite database with the configuration
+	if err != nil {
+		log.Fatalf("Failed to initialize storage: %s", err.Error()) // log an error if the storage initialization fails
+	}
+
+	// log the storage path
+	slog.Info("Storage initialized", slog.String("storage_path", cfg.StoragePath), slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
 
 	// setup router
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("POST /api/students", student.New()) // register the student handler for POST requests to /api/students
+	router.HandleFunc("POST /api/students", student.New(storage)) // register the student handler for POST requests to /api/students
 
 	// setup server
 
@@ -60,7 +69,7 @@ func main() {
 
 	defer cancel() // ensure the context is cancelled after use
 
-	err := server.Shutdown(ctx) // shutdown the server gracefully
+	err = server.Shutdown(ctx) // shutdown the server gracefully
 	if err != nil {
 		slog.Error("Failed to shutdown server", slog.String("error", err.Error()))
 	} // log any error that occurs during shutdown
