@@ -10,14 +10,35 @@ go mod init github.com/AnshSinghSonkhia/golang-students-api
 
 ## Project Structure
 
-```text
-Main-Folder
-    |-> cmd
-    |   |-> golang-students-api     <-- Your Project Name
-    |       |-> main.go             <-- Main Entry File of Project
-    |-> config
-        |-> local.yaml
-    |-> go.mod                      <-- run 'go mod init github.com/AnshSinghSonkhia/golang-students-api' command in cmd to get this file
+```plaintext
+golang-students-api/
+├── cmd/
+│   └── golang-students-api/
+|       └── main.go
+├── config/
+│   └── local.yaml
+├── internal/
+│   ├── config/
+│   │   └── config.go
+│   ├── http/
+│   │   └── handlers/
+│   │       └── student/
+│   │           └── student.go
+│   ├── storage/
+│   │   └── sqlite/
+│   │   │   └── sqlite.go
+│   │   └── storage.go
+│   ├── types/
+│   |   └── types.go
+|   └── utils/
+│       └── response
+|           └── response.go
+├── storage/
+│   └── storage.db
+├── .gitignore
+├── go.mod
+├── go.sum
+└── README.md
 ```
 
 # `Config` folder
