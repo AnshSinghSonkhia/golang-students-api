@@ -8,4 +8,6 @@ type Storage interface {
 
 	// GetStudentByID retrieves a student by ID from the storage.
 	GetStudentByID(id int64) (types.Student, error)
+
+	GetStudents() ([]types.Student, error)
 }

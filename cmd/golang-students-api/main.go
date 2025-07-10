@@ -41,6 +41,9 @@ func main() {
 	// register the student handler for GET requests to /api/students/{id}
 	router.HandleFunc("GET /api/students/{id}", student.GetByID(storage))
 
+	// register the student handler for GET requests to /api/students
+	router.HandleFunc("GET /api/students", student.GetList(storage))
+
 	// setup server
 
 	server := http.Server{

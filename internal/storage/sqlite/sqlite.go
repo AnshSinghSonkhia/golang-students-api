@@ -90,4 +90,36 @@ func (s *Sqlite) GetStudentByID(id int64) (types.Student, error) {
 	return student, nil
 }
 
-// 9:05:00
+func (s *Sqlite) GetStudents() ([]types.Student, error) {
+
+	// Prepare the SQL statement to select all students
+	stmt, err := s.DB.Prepare("SELECT id, name, email, age FROM students")
+
+	if err != nil {
+		return nil, err // Return nil and an error if the statement preparation fails
+	}
+
+	defer stmt.Close() // Ensure the statement is closed after use
+
+	rows, err := stmt.Query() // Execute the query to get all students
+	if err != nil {
+		return nil, err // Return nil and an error if the query execution fails
+	}
+
+	defer rows.Close() // Ensure the rows are closed after use
+
+	var students []types.Student // Create a slice to hold the retrieved students
+
+	for rows.Next() { // Iterate over the rows returned by the query
+		var student types.Student // Create a Student struct to hold the data for each row
+
+		err := rows.Scan(&student.Id, &student.Name, &student.Email, &student.Age) // Scan the row data into the Student struct
+		if err != nil {
+			return nil, fmt.Errorf("scan error: %w", err) // Return nil and an error if scanning fails
+		}
+
+		students = append(students, student) // Append the Student struct to the slice of students
+	}
+
+	return students, nil // Return the slice of students and no error
+}

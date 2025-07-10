@@ -98,3 +98,21 @@ func GetByID(storage storage.Storage) http.HandlerFunc {
 		response.WriteJSON(w, http.StatusOK, student) // if the student is found, respond with a 200 OK status code and the student data
 	}
 }
+
+func GetList(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		slog.Info("Retrieving list of students") // log the action of retrieving the list of students
+
+		students, err := storage.GetStudents() // call the GetStudents method on the storage interface to retrieve the list of students
+		if err != nil {
+			slog.Error("Error retrieving list of students", slog.Any("error", err)) // log the error if there is an issue retrieving the list
+
+			response.WriteJSON(w, http.StatusInternalServerError, response.GeneralError(err)) // if there is an error, respond with a 500 Internal Server Error status code
+
+			return // return early to avoid further processing
+		}
+
+		response.WriteJSON(w, http.StatusOK, students) // if the list is retrieved successfully, respond with a 200 OK status code and the list of students
+	}
+}
