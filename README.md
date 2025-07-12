@@ -1,6 +1,10 @@
 # Golang Students REST API Project
 
-**Tech-Stack:** Golang, SQLite
+![Go](https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![Cleanenv](https://img.shields.io/badge/cleanenv-007ACC?logo=go&logoColor=white)
+![Postman](https://img.shields.io/badge/Postman-FF6C37?logo=postman&logoColor=white)
+![HeidiSQL](https://img.shields.io/badge/HeidiSQL-4479A1?logo=heidisql&logoColor=white)
 
 ## To Create Go Project
 
